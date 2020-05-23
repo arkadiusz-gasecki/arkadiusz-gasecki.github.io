@@ -1,0 +1,170 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<link rel="stylesheet" type="text/css" href="../../css/math_style.css">
+
+	<h3>BigQuery vs Teradata SQL</h3>
+	<p>
+		This listing was inspired by Coursera specialization <i>From Data to Insights with Google Cloud Platform</i>. I have observed there usage of different SQL statements. I decided to extract some of them and show here, how similar queries look like in Standard/BigQuery SQL comparing to syntax commonly used in Teradata. Then, concept of arrays will be briefly mentioned.
+	</p>
+	
+	<p class="sql_table">
+	SAMPLING
+	<table class="pseudocode">
+		<th>BigQuery</th><th>Teradata</th>
+		<tr>
+			<td>SELECT * FROM <i>table</i> <b>LIMIT 10</b>;</td>
+			<td>SELECT <b>TOP 10</b> * FROM <i>table</i>;</td>
+		</tr>
+	</table>
+	</p>
+	
+	<p class="sql_table">
+	TABLE CREATION
+	<table class="pseudocode">
+		<th>BigQuery</th><th>Teradata</th>
+		<tr>
+			<td>CREATE <b>OR REPLACE</b> <i>table</i> AS SELECT * FROM ...;</td>
+			<td>CREATE <i>table</i> <b>AS (</b>SELECT * FROM ...<b>) WITH (NO) DATA</b>;</td>
+		</tr>
+	</table>
+	</p>
+	
+	<p class="sql_table">
+	WITH clause ORDER
+	<table class="pseudocode">
+		<th>BigQuery</th><th>Teradata</th>
+		<tr>
+			<td>
+			WITH <b>set1</b> AS
+			(
+			SELECT '0' as num
+			),<br/>
+			set2 AS
+			(
+			SELECT num FROM <b>set1</b>
+			)<br/>
+			SELECT * FROM set2
+			;
+			</td>
+			<td>
+			WITH set2 AS
+			(
+			SELECT num FROM <b>set1</b>
+			),<br/>
+			<b>set1</b> AS
+			(
+			SELECT '0' as num
+			)<br/>
+			SELECT * FROM set2
+			; <i class="green">-- works also in reverse order</i>
+			</td>
+		</tr>
+	</table>
+	</p>
+	
+	<p class="sql_table">
+	Different SELECT functions
+	<table class="pseudocode">
+		<th>BigQuery</th><th>Teradata</th>
+		
+		<tr><td>
+			SELECT <b>CONCAT</b>('part1','part2');
+		</td><td>
+			SELECT 'part1'<b>||</b>'part2';
+		</td></tr>
+		
+		<tr><td>
+			SELECT <b>SAFE_DIVIDE</b>(value_to_divide, divisor);
+		</td><td>
+			SELECT value_to_divide / <b>NULLIFZERO</b>(divisor); <i class="green">-- this solution does not work for non-numeric divisors</i>
+		</td></tr>
+		
+		<tr><td>
+			SELECT * <b>EXCEPT(col_to_exclude)</b> FROM <i>table</i>;
+		</td><td>
+			N/A
+		</td></tr>
+		
+		<tr><td>
+			SELECT <b>IF(condition, value_when_true, value_when_false)</b> FROM <i>table</i>;
+		</td><td>
+			SELECT <b>CASE WHEN condition THEN value_when_true ELSE value_when_false</b> FROM <i>table</i>;
+		</td></tr>
+		
+		<tr><td>
+			SELECT <b>FORMAT("fmt"</b>, col) FROM <i>table</i>;
+		</td><td>
+			SELECT <b>CAST</b>(col AS <b>"fmt"</b>) FROM <i>table</i>;
+		</td></tr>
+		
+		<tr><td>
+			SELECT <b>EXTRACT(DATE FROM</b> date_col) FROM <i>table</i>;
+		</td><td>
+			SELECT <b>CAST</b>(date_col <b>AS DATE</b>) FROM <i>table</i>;
+		</td></tr>
+		
+		<tr><td>
+			SELECT <b>DATE_TRUNC</b>(date_col, <b>MONTH</b>) FROM <i>table</i>;
+		</td><td>
+			SELECT <b>EXTRACT( MONTH FROM</b> date_col) FROM <i>table</i>;
+		</td></tr>
+		
+		<tr><td>
+			SELECT<b> SAFE_CAST</b>(col AS INT64) FROM <i>table</i>;
+		</td><td>
+			N/A
+		</td></tr>
+		
+		<tr><td>
+			SELECT * FROM <i>table1</i> 
+			<b>UNION DISTINCT</b> 
+			SELECT * FROM <i>table2</i>;
+		</td><td>
+			SELECT * FROM <i>table1</i> 
+			<b>UNION</b>
+			SELECT * FROM <i>table2</i>;
+		</td></tr>
+		
+		<tr><td>
+			SELECT<b> ANY_VALUE</b>(col) FROM <i>table</i>;
+		</td><td>
+			N/A
+		</td></tr>
+		
+	</table>
+	<br/><br/>
+	</p>
+	<hr/>
+	<p style="margin-top: 3em">Concept of arrays as type in Teradata is not as flexible as in BigQuery. Before it can be used, explicit type of an array needs to be defined.</p>
+	<p class="sql_table">
+	Aggregate functions
+	<table class="pseudocode">
+		<th>BigQuery</th><th>Teradata</th>
+		<tr><td>
+			SELECT <b>ARRAY_AGG</b>(col <i>[LIMIT num]</i>) FROM <i>table</i>;
+		</td><td>
+			CREATE TYPE <i>type_name</i> as VARCHAR(20) ARRAY[5];<br/>
+			SELECT <b>ARRAY_AGG</b>(col, NEW <i>type_name</i>) FROM <i>table</i>;
+		</td></tr>
+		
+		<tr><td>
+			SELECT <b>STRING_AGG</b>(col <i>[LIMIT num]</i>) FROM <i>table</i>;
+		</td><td>
+			N/A
+		</td></tr>
+	</table>
+	</p>
+	<p>
+	In Teradata, arrays are of given, predefined length. In BigQuery it is flexible and it is possible to check length of array created using following syntax:<br/><br/>
+
+	<span style="font-family: Courier New">
+	SELECT <b>ARRAY_LENGTH/<b>(<i>array_col</i>) FROM <i>table</i>;
+	</span>
+	</br><br/>
+	</p>
+	
+	<div class="footer">
+		<a href="https://www.mathjax.org">
+		<img title="Powered by MathJax" src="https://www.mathjax.org/badge/badge.gif" border="0" alt="Powered by MathJax" />
+		</a>
+	</div>
