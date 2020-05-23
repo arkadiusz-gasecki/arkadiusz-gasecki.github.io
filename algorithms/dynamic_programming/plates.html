@@ -1,0 +1,135 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<link rel="stylesheet" type="text/css" href="../../css/math_style.css">
+
+	<h3>Plates</h3>
+	<p>
+		This problem is given as follows:
+		<ol>
+			<li>We are given set of stack</li>
+			<li>Each stack has a given, same number of plates</li>
+			<li>Each plate is given a beauty index</li>
+			<li>Task is to take a given number of plates and maximize total beauty index of plates taken</li>
+			<li>There is one restriction, if we want to take a plate from the stack, we also need to take all plates that are above this plate</li>
+		</ol>
+		<br/>
+		Here is our example that we will use to explain the solution. We have three stacks:<br/>
+	</p>
+
+	<table class="noborder text_center">
+		<tr><td>10  </td><td> 80 </td><td> 40  </td></tr>
+		<tr><td>10  </td><td> 50 </td><td> 60  </td></tr>
+		<tr><td>100 </td><td> 10 </td><td> 50  </td></tr>
+		<tr><td>30  </td><td> 50 </td><td> 100 </td></tr>
+		<tr><td><b>Stack 1</b></td><td><b>Stack 2</b></td><td><b>Stack 3</b></td></tr>
+	</table>
+
+	<p>
+		Let's say, that we need to take 6 plates. (e.g. if we want to take plate 100 from Stack 1, we also need to take two "10" plates above.) We want to do it this way that total sum of numbers taken is maximized. Naive approach says that we take all possible combinations and return the best one. However, this approach is inefficient, especially if number of stacks and plates increases.<br/><br/>
+	
+		<b>Step 1</b><br/>
+		In first step we calculate for each stack separately, sums of values for given number of plates taken:
+	</p>
+	
+	<table class="text_center">
+		<tr><td>1 plate taken  </td><td> 10           </td><td> 80          </td><td> 40 </td></tr>
+		<tr><td>2 plates taken </td><td> 10+10        </td><td> 80+50       </td><td> 40+60 </td></tr>
+		<tr><td>3 plates taken </td><td> 10+10+100    </td><td> 80+50+10    </td><td> 40+60+50 </td></tr>
+		<tr><td>4 plates taken </td><td> 10+10+100+30 </td><td> 80+50+10+50 </td><td> 40+60+50+100 </td></tr>
+	</table>
+	
+	<p>
+		If we store this sums in memory, we will not have to calculate them each time it is needed. This is needed in next step.<br/><br/>
+
+		<b>Step 2</b><br/>
+		Second step will be iteration through all stacks. Here actual <i>dynamic programming</i> technique is being used, as in each step we will refer to previously computed partial results.<br/>
+		We will go through each stack, from top to the bottom. Table below shows sums of stacks (as calculated above) with marked direction of calculation.
+	</p>
+	
+	<table class="text_center">
+		<tr><td rowspan="4">\(\bigg\downarrow\)</td><td>10 </td><td>80 </td><td>40 </td></tr>
+		<tr>                                        <td>20 </td><td>130</td><td>100</td></tr>
+		<tr>                                        <td>120</td><td>140</td><td>150</td></tr>
+		<tr>                                        <td>150</td><td>190</td><td>200</td></tr>
+		<tr><td colspan="4">\(\rightarrow\)</td></tr>
+	</table>
+	
+	<p>
+	Pseudocode for looking for solution looks as follows:
+	</p>
+		<div class="pseudocode">
+			for each Stack:<br/>
+			<div style="text-indent: 10px">for i in [0..plates to be taken]:</div>
+			<div style="text-indent: 20px">for x in [1, min(i, number of plates in stack)]:</div>
+			<div style="text-indent: 30px">dp[Current stack][i] = max(dp[Current stack][i], sum[Current stack][x] + dp[Previous stack][i-x])</div>
+		</div>
+	<p>
+		This sounds a little big enigmatic, so let's try to go trough it step by step.
+		Our target is to take 6 plates. We examine first stack (most outer loop) and calculate for that stack, how much total value we get if we take \(i\) plates. This is the second and third loop. We can take up to four plates.<br/>
+		As a result we receive table \(dp\) which gives these values:<br/>
+		\(dp[1][1] = 10\)<br/>
+		\(dp[1][2] = 20\)<br/>
+		\(dp[1][3] = 120\)<br/>
+		\(dp[1][4] = 150\)<br/>
+		In our table \(dp\) with intermediate results, first index denotes, how many stacks we have visited. Second index determines, how many plates in total we have taken.<br/>
+		Then we go to second plate (most outer loop). Here we will calculate values into \(dp[2]\), which will simply mean that we calculate values taking two stacks into consideration.<br/>
+		Here however, when we go through number of plates (middle loop) we also need to take into consideration previous results.<br/>
+		We will save our partial results in \(dp[2]\) - this time we can go up to 6 plates, because there is more (eight, from two stacks) to be selected from.
+		For each number of plates we decide how many plates to take from current stack and how many from previous stacks.<br/>
+		For instance, let's say we consider picking up 3 plates. We have following possibilities:
+		<ul>
+			<li>Take 3 plates from previous solution and none from current stack</li>
+			<li>Take 2 plates from previous solution and 1 from current stack</li>
+			<li>Take 1 plates from previous solution and 2 from current stack</li>
+			<li>Take 0 plates from previous solution and 3 from current stack</li>
+		</ul>
+		These possibilities describe very well this inner loop. We check each of such variants and take the one that returns the maximized solution.<br/>
+		Let's go in detail through first two iterations:
+		<ul>
+			<li>
+				We take 1 plate, so we have one iteration in inner loop. In this loop we compare two values:
+				<ul>
+					<li>Sum of \(i\) plates from current stack - this we take from stored sums, so here we refer to sum for Stack 2 and 1 plate - value is 80</li>
+					<li>Stored sum of \(i\) plates from previous stacks - this we take from \(dp[1][1]\) - so one plate from one stack</li>
+				</ul>
+			<li>
+				We take 2 plates, here we will have three iterations, where we consider following values:
+				<ul>
+					<li>\(sum[\)Current stack\(][2]\) and none from previous calculations</li>
+					<li>\(sum[\)Current stack\(][1]\) and \(dp[1][1]\) (one from current, one from previous)</li>
+					<li>\(dp[1][2]\) - two plates from previous stack</li>
+				</ul>
+		
+				We take maximum value and store in \(dp[2][2]\) - which means two plates form total of two stacks<br/>
+				Ok, so \(dp[2][1]\) will be either \(80\) or \(dp[1][1] = 10 \rightarrow\) we take 80.<br/>
+				For \(dp[2][2]\) we compare:
+	
+				<table class="text_center">
+					<th>Number of plates </th><th> dp[1] </th><th> Sum for 2<sup>nd</sup> stack</th>
+					<tr><td>0 </td><td> 0   </td><td> 0 </td></tr>
+					<tr><td>1 </td><td> 10  </td><td> 80 </td></tr>
+					<tr><td>2 </td><td> 20  </td><td> 130 </td></tr>
+					<tr><td>3 </td><td> 120 </td><td> 140 </td></tr>
+					<tr><td>4 </td><td> 150 </td><td> 190 </td></tr>
+				</table>
+
+				\(0 + 130 = 130\)<br/>
+				\(10 + 80 = 90\)<br/>
+				\(20 + 0 = 20\)<br/>
+				Therefore in \(dp[2][2]\) we will save 130 - cause when we want to take two plates from two stacks, the best would be to take both of them from second one.
+
+		</ul>
+
+		When we go to 6 plates we will go from variants, where we take 4 plates from previous stack \((dp)\) and 2 from current stack, to the totally opposite variant where we take two stacks from \(dp\) and four from current stack.<br/>
+		As a result of this iteration, we will have values for \(dp[2][1]\) to \(dp[2][6]\).<br/>
+		In third iteration, we will refer only to third stack and calculations from \(dp[2][i]\), so from already two previous stacks.<br/><br/>
+		
+		
+		Final answer will be placed in \(dp[3][6]\) - which simply means six plates taken from three stacks.
+	</p>
+	
+	<div class="footer">
+		<a href="https://www.mathjax.org">
+		<img title="Powered by MathJax" src="https://www.mathjax.org/badge/badge.gif" border="0" alt="Powered by MathJax" />
+		</a>
+	</div>

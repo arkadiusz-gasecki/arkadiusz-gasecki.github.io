@@ -1,0 +1,148 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<link rel="stylesheet" type="text/css" href="../../css/math_style.css">
+
+	<h3>Energy stones</h3>
+	<p>
+		This problem is given as follows:
+		<ol>
+			<li>There is a rock monster that has collected energy stones for lunch</li>
+			<li>Each stone has different amount of energy (energy units)</li>
+			<li>Each stone can be eaten in different amount of time (eaten in seconds). However, for simplicity here we will use same time for each stone</li>
+			<li>Each stone loses given amount of energy with time, when not being eaten (energy units lost per second)</li>
+			<li>Monster can consume only one stone at a time</li>
+			<li>Question is, what is the maximum amount of energy that monster can receive from eating given stones</li>
+		</ol>
+		<br/>
+		We will describe algorithm using following example:
+	</p>
+	
+	<table class="text_center">
+		<th>Stone </th><th> Energy units </th><th> Eaten in seconds </th><th> Energy units lost per second </th>
+		<tr><td> 1 </td><td> 10 </td><td> 5 </td><td> 1 </td></tr>
+		<tr><td> 2 </td><td> 30 </td><td> 5 </td><td> 5 </td></tr>
+		<tr><td> 3 </td><td> 30 </td><td> 5 </td><td> 1 </td></tr>
+		<tr><td> 4 </td><td> 80 </td><td> 5 </td><td> 60 </td></tr>
+	</table>
+	
+	<p>
+		We will store partial results in table \(M[i][j]\), where \(i\) is number of stones considered and \(j\) are possible time slots. To simplify logic, we assume that \(j\) will describe number of seconds that passed, so we start in \(j=0\).<br/>
+	
+		Similarly as in oter problems described here, we also consider, whether the stone should be taken at each step or not. We will iterate through all items and all possible time slots. Our maximum time is sum of all times that are needed to eat all stones. In our example it will be then 20.<br/>
+		There is nevertheless one tricky thing, namely we have to consider adjusted energy at each time. Thus, when we are in time \(t\), we consider two following cases:
+		<ul>
+			<li>We do not eat stone, so we take \(M[i+1][t]\)</li>
+			<li>Or we eat stone, which means we take \(M[i+1][t+seconds(i)] + stoneenergy(t)\)</li>
+		</ul>
+		Because of the fact of losing energy, we need to go backwards and "look to the future". Hence, in each step we try to imagine that we eat stone at time \(t\) and then consider situation where we at the next stone \((i+1)\) and we have eaten current stone \((t+seconds[i])\). Let's see stone by stone, how it would look like.<br/>
+		We order stones by lost energy and start with stone number 1, but asume that all other stones were considered (that is why we will use index 4). For this stone we will define simple values in our \(M\) matrix. Also, we will go backwards in time, from last second to first second.<br/>
+		We will have M[1,20] = 0, as in last second stone does not have energy anymore.
+		Going back, we will notice that is starts to have energy in 10<sup>th</sup> second. Finally, we will get following matrix:
+	</p>
+	
+	<table class="text_center">
+		<tr><td>M[4,0]  </td><td> 10 </td></tr>
+		<tr><td>M[4,1]  </td><td> 9 </td></tr>
+		<tr><td>M[4,2]  </td><td> 8 </td></tr>
+		<tr><td>M[4,3]  </td><td> 7 </td></tr>
+		<tr><td>...     </td><td> ... </td></tr>
+		<tr><td>M[4,9]  </td><td> 1 </td></tr>
+		<tr><td>M[4,10] </td><td> 0 </td></tr>
+		<tr><td>...     </td><td> ... </td></tr>
+		<tr><td>M[4,20] </td><td> 0 </td></tr>
+	</table>
+	
+	<p>
+		Now, we also take second stone. We can collate results for first and second stone:
+	</p>
+	
+	<table class="text_center">
+		<th>t   </th><th> M[i+1,t] </th><th> Stone 3 energy </th><th> M[i+1, t+5] </th>
+		<tr><td>0   </td><td> 10  </td><td> 30 </td><td> 5   </td></tr>
+		<tr><td>1   </td><td> 9   </td><td> 29 </td><td> 4   </td></tr>
+		<tr><td>2   </td><td> 8   </td><td> 28 </td><td> 3   </td></tr>
+		<tr><td>... </td><td> ... </td><td> ...</td><td> ... </td></tr>
+		<tr><td>5   </td><td> 5   </td><td> 25 </td><td> 0   </td></tr>
+		<tr><td>... </td><td> ... </td><td> ...</td><td> ... </td></tr>
+		<tr><td>10  </td><td> 0   </td><td> 20 </td><td> 0   </td></tr>
+		<tr><td>11  </td><td> 0   </td><td> 19 </td><td> 0   </td></tr>
+		<tr><td>... </td><td> ... </td><td> ...</td><td> ... </td></tr>
+		<tr><td>20  </td><td> 0   </td><td> 10 </td><td> 0   </td></tr>
+	</table>
+	
+	<p>
+		Hence, in time \(t=0\) we take value 35, cause we assume we eat Stone 3 at time 0 and after its consuming time, 5 seconds, we take Stone 1, which at this point has energy 5.<br/>
+		Let us go one stone further, Stone 2. Similarly as above, we get following results:
+	</p>
+	
+	<table class="text_center">
+		<th>t   </th><th> M[i+1,t]  </th><th> Stone 2 energy </th><th> M[i+1, t+5] </th><th> Value taken </th>
+		<tr><td>0   </td><td> 35  </td><td> 30  </td><td> 25  </td><td> 55  </td></tr>
+		<tr><td>1   </td><td> 33  </td><td> 25  </td><td> 24  </td><td> 49  </td></tr>
+		<tr><td>2   </td><td> 31  </td><td> 20  </td><td> 23  </td><td> 43  </td></tr>
+		<tr><td>... </td><td> ... </td><td> ... </td><td> ... </td><td> ... </td></tr>
+		<tr><td>5   </td><td> 25  </td><td> 5   </td><td> 20  </td><td> 25  </td></tr>
+		<tr><td>... </td><td> ... </td><td> ... </td><td> ... </td><td> ... </td></tr>
+		<tr><td>10  </td><td> 20  </td><td> 0   </td><td> 15  </td><td> 20  </td></tr>
+		<tr><td>11  </td><td> 19  </td><td> 0   </td><td> 14  </td><td> 19  </td></tr>
+		<tr><td>... </td><td> ... </td><td> ... </td><td> ... </td><td> ... </td></tr>
+		<tr><td>20  </td><td> 10  </td><td> 0   </td><td> 0   </td><td> 10  </td></tr>
+	</table>
+	
+	<p>
+		As final value we select between second column, or sum of third and fourth one. If we think of that, in \(t=0\) we are taking Stone 2, with energy 30. It takes 5 second to be consumed, so to that we add value from previous calculation in \(t+5\). And there we have already selected best option of eating two stones, so we have best combination of all three stones now. Similarly it works for other time slots. We can also observe, that starting from \(t=5\) we omit Stone 2, and take result only from eating Stone 3 and Stone 1.<br/>
+		Now, we consider last stone, Stone 4. With it, our table will look as follows:
+	</p>
+	
+	<table class="text_center">
+		<th>t   </th><th> M[i+1,t] </th><th> Stone 4 energy </th><th> M[i+1, t+5] </th><th> Value taken </th>
+		<tr><td>0   </td><td> 55  </td><td> 80  </td><td> 25  </td><td> 105 </td></tr>
+		<tr><td>1   </td><td> 49  </td><td> 20  </td><td> 24  </td><td> 49  </td></tr>
+		<tr><td>2   </td><td> 43  </td><td> 0   </td><td> 23  </td><td> 43  </td></tr>
+		<tr><td>... </td><td> ... </td><td> ... </td><td> ... </td><td> ... </td></tr>
+		<tr><td>5   </td><td> 25  </td><td> 0   </td><td> 20  </td><td> 25  </td></tr>
+		<tr><td>... </td><td> ... </td><td> ... </td><td> ... </td><td> ... </td></tr>
+		<tr><td>10  </td><td> 20  </td><td> 0   </td><td> 15  </td><td> 20  </td></tr>
+		<tr><td>11  </td><td> 19  </td><td> 0   </td><td> 14  </td><td> 19  </td></tr>
+		<tr><td>... </td><td> ... </td><td> ... </td><td> ... </td><td> ... </td></tr>
+		<tr><td>20  </td><td> 10  </td><td> 0   </td><td> 0   </td><td> 10  </td></tr>
+	</table>
+
+	<p>
+		Our calculation was done backwards, from \(t=20\) to \(t=0\). Hence, our answer fill we placed in first cell of matrix M.<br/>
+		This approach however needs one assumption. Namely, we need to consider stones in particular order, from the one that loses energy slowest to the one that loses it fastest.<br/>
+		With this assmumption we can also see, why it has sense to enumerate matrix \(M\) backwards. In first iteration, we did id as \(M[4,t]\) even though we had only one stone. However, because we know that this stone was losing energy slowest, then if its energy was 0, we knew that other stones also had value 0 at this time.
+		But this is mostly syntax, and could be modified as long as we ensure that general approach stays the same.<br/>
+	
+		Ok, but what if we have different eating time, as given in problem description?
+		In this case, we still need to sort stones by how fast they lose energy. But to build this sort, we need to include two factors: time needed to eat stone and units of energy lost per second. We can calculate thing, which is called total loss of energy.<br/>
+		If we want to compare two stones, i and j, we can compare values: <i>Seconds<sub>i</sub> * Losing<sub>j</sub></i> and <i>Seconds<sub>j</sub> * Losing<sub>i</sub></i>. Let us take a look at following example:
+	</p>
+	
+	<table class="text_center">
+		<th>Stone </th><th> Energy units </th><th> Eaten in seconds </th><th> Energy units lost per second </th>
+		<tr><td>1 </td><td> 10 </td><td> 20  </td><td> 1  </td></tr>
+		<tr><td>2 </td><td> 30 </td><td> 5   </td><td> 5  </td></tr>
+		<tr><td>3 </td><td> 30 </td><td> 100 </td><td> 1  </td></tr>
+		<tr><td>4 </td><td> 80 </td><td> 5   </td><td> 60 </td></tr>
+	</table>
+	
+	<p>
+		If we want to compare Stone 1 and Stone 2, we will compare respectively <i>Seconds<sub>2</sub> * Losing<sub>1</sub> = 5 * 1</i> and <i>Seconds<sub>1</sub> * Losing<sub>2</sub> = 20 * 5</i>).
+		If we eat Stone 1 at first, Stone 2 will lose meanhwile 100 energy units (so its all energy). If we eat Stone 2 first, then Stone 1 will lose 5 units meanwhile.
+		It means that Stone 1 loses energy slower comparing to Stone 2.<br/>
+		But such calculation means that we would have to compare all pairs and apply some kind of ordering. However, this rule can be provided in more straightforward way. Namely, for each stone we can compare fraction of \(Seconds_i / Losing_i\). In this way, we combine these two factors, as intended.
+		We also sort them from biggest to smallest value. Stones with losing value 0 will be then our first ones in this approach.<br/>
+		In our example Stone 1 will have value 0.05, while Stone 2 will have value 1.<br/>
+		This comparison comes from mathematics, cause we do it as follows:
+
+		$$L1*S2 \; \stackrel{?}{>} \; L2*S1 \;\;\; /:S1*S2$$
+		$$\frac{L1*S2}{S1*S2} \; \stackrel{?}{>} \; \frac{L2*S1}{S2*S1}$$
+		$$\frac{L1}{S1} \; \stackrel{?}{>} \; \frac{L2}{S2}$$
+	</p>
+	
+	<div class="footer">
+		<a href="https://www.mathjax.org">
+		<img title="Powered by MathJax" src="https://www.mathjax.org/badge/badge.gif" border="0" alt="Powered by MathJax" />
+		</a>
+	</div>

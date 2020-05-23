@@ -1,0 +1,46 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<link rel="stylesheet" type="text/css" href="../../css/math_style.css">
+
+	<h3>Number of paths in matrix</h3>
+	<p>
+		Here we describe, how to calculate number of paths in matrix. At first, define what is the problem. Imagine that you have matrix, like one below:
+	</p>
+		<img src="matrix_1.png"/>
+	<p>
+		What we want to determine is, how many distinct paths we have, when going from A to B. Important is that we are saying about paths that can overlap. <br/>
+		Calculation to get answer is very simple, yet here we show step by step, how we get to that. At first define two variables, which describe width and height of the grid, here it is \(W = 4, H = 6\) (actually we seek coordinates of our target, which in this case are the same). <br/>
+		First thing to notice is, that regardless of path, number of steps to be taken is always the same, overall we need to take 3 steps right and 5 steps down.
+		<br/><br/>
+		Therefore our steps that we need to take are equal to: <br/>
+		Steps right = \(W - 1 = 4 - 1 = 3\) <br/>
+		Steps down = \(H - 1 = 6 - 1 = 5\) <br/>
+		Each path that we want to find, has a total length of 8, which can be written down as: <br/> 
+		\((W-1) + (H-1) = (W + H) - 2\) <br/>
+		Out of these paths, we simply look for paths that are either 3 steps right (so other 5 steps have to be down) or 5 steps down. Anyway, this will lead to the same calculation, where we select combinations for 3 (or 5) out of 8. This means that we need to calculate binomial:<br/>
+		
+		\(\binom{8}{5} = \frac{8!}{5!(8-5!)} = \frac{8!}{5!3!}\) <br/>
+		If we start from another value, we still get the same result: <br/>
+		\(\binom{8}{3} = \frac{8!}{3!(8-3!)} = \frac{8!}{3!5!}\) <br/>
+		So, in general we can write equation to calculate total number of paths as follows: <br/>
+		\(\frac{(W+H-2)!}{(W-1)!(H-1)!} = \binom{W+H-2}{W-1} = \binom{W+H-2}{H-1}\)
+		<br/><br/>
+		Let us go to a smaller example, to make things clear. Let's take matrix \(3x3\), like one below:
+	</p>
+		<img src="matrix_2.png"/>
+	<p>
+		We want to go from point \((1,1)\) to \((3,3)\), our \(W = 3\) and \(H = 3\). We can see that we need to make 4 steps to get there, e.g.
+	</p>
+		<img src="matrix_3.png"/>
+	<p>
+		So, we have four steps to fulfil, where two of them go right (R) and two of them go down (D). We can therefore simply ask: how many combinations are there, where we select e.g. right steps out of total steps? It leads to following solutions in this example:
+	</p>
+		<img src="matrix_4.png"/>
+	<p>
+	In each situation, free slots will be populated by moves down. Of course, we could ask this question another way round, but still final equation will be the same. Answer comes from combinatorics - number of combinations. As it was given earlier, it is calculated from binomial \(\binom{W+H-2}{W-1}\). It can be also denoted in different ways, if \(W+H-2 = n\) and \(W-1 = k\), we can find following notations: \(C(n,k), C_k^n, _nC_k, ^nC_k, C_{n,k}\).
+	</p>
+	<div class="footer">
+		<a href="https://www.mathjax.org">
+		<img title="Powered by MathJax" src="https://www.mathjax.org/badge/badge.gif" border="0" alt="Powered by MathJax" />
+		</a>
+	</div>

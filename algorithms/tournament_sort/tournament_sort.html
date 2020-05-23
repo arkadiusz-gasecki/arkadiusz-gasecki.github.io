@@ -1,0 +1,52 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<link rel="stylesheet" type="text/css" href="../../css/math_style.css">
+
+	<h3>Tournament sort algorithm</h3>
+	<p>
+		This algorithm is obviously one of ways to sort the data. Nevertheless, description here will be given from a little bit different angle. One of the ideas of using this algorithm is to apply it, when we have shared resources that can perform operations in parallel.<br/>
+		This is the situation e.g. for Teradata database technology. Briefly speaking, engine of this database in constructed in such a way, that portions of data are kept and managed across so called AMPs (Access Module Processor).
+		So, if we have one table, it simply means that its rows are distributes across these AMPs.<br/>
+		Hence, if we want to select such table with data sorted, it means that such application has to be done, where all AMPs will make part of the job. Here is where tournament sort comes.<br/>
+		Let us look at following example. Assume we have table with nine elements, from 1 to 9. This data is placed unordered across three AMPs, which looks as follows:
+	</p>
+	
+	<table class="noborder">
+		<tr><td>AMP 1   </td><td> AMP 2   </td><td> AMP 3   </td></tr>
+		<tr><td>\([1,7,4]\)</td><td>\([2,8,5]\)</td><td>\([9,6,3]\)</td></tr>
+	</table>
+	
+	<p>
+		In our tournament algorithm, first step is done in parallel, namely each AMP sorts its own portion of the data, which leads to following result:
+	</p>
+	
+	<table class="noborder">
+		<tr><td>AMP 1   </td><td> AMP 2   </td><td> AMP 3   </td></tr>
+		<tr><td>\([1,4,7]\)</td><td>\([2,5,8]\)</td><td>\([3,6,9]\)</td></tr>
+	</table>
+	
+	<p>
+		In second step, each AMP returns first element to a middle layer, which then takes smallest element ouf of them. In our case this middle layer will receive elements $1,2,3$ from which it returns $1$ as first (sorted) element. \\
+		In subsequents steps, this AMP, whose element was returned, will provide next element from its list.
+	</p>
+	
+	<table class="noborder">
+		<tr><td>\([\colorbox{yellow}{1},4,7] [\colorbox{yellow}{2},5,8] [\colorbox{yellow}{3},6,9]\) </td><td>       </td></tr>
+		<tr><td>\([1,2,3] \rightarrow \)               </td><td> \([1]\) </td></tr>
+		<tr></tr>
+		<tr><td>\([\colorbox{yellow}{4},7] [\colorbox{yellow}{2},5,8] [\colorbox{yellow}{3},6,9]\) </td><td>         </td></tr>
+		<tr><td>\([4,2,3] \rightarrow \)               </td><td> \([1,2]\) </td></tr>
+		<tr></tr>
+		<tr><td>\([\colorbox{yellow}{4},7] [\colorbox{yellow}{5},8] [\colorbox{yellow}{3},6,9]\) </td><td>           </td></tr>
+		<tr><td>\([4,5,3] \rightarrow \)             </td><td> \([1,2,3]\) </td></tr>
+	</table>
+
+	<p>
+		This goes on till all elements from all AMPs are taken. There are two things that are worth to underline. First one, this is only a general idea, how this approach works. Second, this algorithm can also be implemented in a programming langauge, most commonly with usage of tree structure, where elements are compared in pairs. In this case, complexity of such algorithm would be \(O(n \)log\((n))\).
+	</p>
+	
+	<div class="footer">
+		<a href="https://www.mathjax.org">
+		<img title="Powered by MathJax" src="https://www.mathjax.org/badge/badge.gif" border="0" alt="Powered by MathJax" />
+		</a>
+	</div>

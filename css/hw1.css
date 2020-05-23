@@ -1,0 +1,241 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, serif;
+    font-size: large;
+    text-align: left;
+}
+
+header{
+    width: 95%;
+    background: #d4d4d4 url("../images/bg.jpg") no-repeat;
+    background-position: top;
+    background-size: 100%;
+    padding: 2.5%;
+    margin: 0px;
+}
+
+h1{
+    color: #ffffff;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    text-transform: uppercase;
+    text-align: center;
+    position: relative;
+    top: -15px;
+}
+
+h2{
+    color: #000000;
+}
+
+nav{
+    text-align: center;
+}
+
+nav a{
+    background-color: rgba(213, 206, 206, 0.42);
+    color: #000000;
+    display: inline-block;
+    font-weight: bold;
+    width: 10%;
+    padding: 10px 40px;
+    margin: 2%;
+    text-decoration: none;
+    border-radius: 7px;
+}
+
+ul.nav {
+	list-style: none;
+	padding-left: 0;
+}
+
+ul.nav-inner {
+	list-style: none;
+}
+
+a.nav-link{
+    background-color: rgb(255, 255, 255);
+    color: #000000;
+    display: inline-block;
+	padding: 4px 4px;
+	margin: 2%;
+    text-decoration: none;
+	cursor: pointer;
+	border-radius: 7px;
+	width: 70%;
+	text-align: center;
+}
+
+a.nav-link-inner{
+	width: 65%;
+	display: none;
+}
+
+a.nav-link-active{
+	background-color: rgb(213, 206, 206);
+}
+
+a.social-icon{
+	margin-right: 5px;
+}
+
+
+img{
+    border: black 4px solid;
+    display: block;
+    width: 75%;
+    margin: 0px auto;
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+img#mypic{
+    border: 0;
+    float: left;
+    margin-right: 2%;
+    margin-top: 0%;
+    margin-bottom: 0%;
+	width: 12%;
+	height: 21%;
+}
+
+
+aside{
+    background: #6296c8;
+    height: 100vh;
+}
+
+.active{
+    background-color: #ffffff;
+}
+
+.left{
+    width: 20%;
+    float: left;
+    padding-left: 3%;
+    padding-right: 3%;
+}
+
+.right{
+    width: 70%;
+    float: left;
+    padding-left: 0.5%;
+}
+
+p{
+    font-family: Helvetica, serif;
+    text-align: left;
+}
+
+table.downloads {
+	border-collapse: separate;
+	border-spacing: 3px;
+	margin-top: 3em;
+}
+
+table.downloads td{
+    padding: 6px 15px;
+}
+
+table.github{
+	border: 1px solid black;
+	border-collapse: collapse;
+	margin-top: 2em;
+	font-family: Georgia;
+	font-size: 1em;
+	text-align: justify;
+	word-spacing: 0.25em;
+	line-height: 1.5em;
+}
+
+table.github td{
+	border: 1px solid black;
+	border-collapse: collapse;
+	padding: 1em;
+}
+
+/* Final Project */
+/*
+table{
+    border-collapse: separate;
+    border-spacing: 3px;
+    font-family: Helvetica, serif;
+    font-weight: bold;
+    line-height: normal;
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+}
+th, td{
+    padding: 6px 15px;
+}
+
+th{
+    background: rgb(158,195,34);
+    background: linear-gradient(0deg, rgba(158,195,34,1) 0%, rgb(48, 62, 28) 100%);
+    -moz-background: linear-gradient(0deg, rgba(158,195,34,1) 0%, rgb(48, 62, 28) 100%);
+    -webkit-background: linear-gradient(0deg, rgba(158,195,34,1) 0%, rgba(95,117,61,1) 100%);
+    -o-background: linear-gradient(0deg, rgba(158,195,34,1) 0%, rgba(95,117,61,1) 100%);
+    -ms-background: linear-gradient(0deg, rgba(158,195,34,1) 0%, rgba(95,117,61,1) 100%);
+    color: rgb(255, 255, 255);
+    font-family: Helvetica, serif;
+    font-size: large;
+    font-weight: bold;
+    text-align: left;
+    text-shadow: .1em .1em #44422e;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-style: solid;
+    border-color: #beec41;
+    padding: 1.5%;
+    margin: 1.5%;
+}
+
+th:hover{
+    color: #dcce9e;
+}
+
+td {
+    color: rgba(85, 85, 85, 0.8);
+    background: rgba(224, 243, 202, 0.8);
+    border-radius: 2px;
+    text-shadow: .1em .1em #d7d7d7;
+    padding: 1.5%;
+}
+
+tr:hover td{
+    background: rgba(224, 243, 202, 1);
+}
+
+td:nth-child(2), td:last-child{
+    text-align: center;
+}
+
+th:nth-child(2), th:last-child{
+    text-align: center;
+}
+*/
+iframe {
+	width: 100%;
+	height: 95vh;
+	border: none;
+	margin-top: 2em;
+}
+
+div#about {
+	width: 80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 0;
+}
+
+.main {
+	margin-top: 2%;
+	margin-left: 5%;
+	margin-right: 15%;
+	font-family: Georgia;
+	font-size: 1em;
+	text-align: justify;
+	word-spacing: 0.25em;
+	line-height: 1.5em;
+}

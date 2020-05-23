@@ -1,0 +1,129 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<link rel="stylesheet" type="text/css" href="../../css/math_style.css">
+
+	<h3>Manhattan distance algorithm - minimum distance</h3>
+	<p>
+		At first we assume that we have points within standard coordinate system.
+		Let us assume that we use only its first quarter, so \(x \geq 0\) and \(y \geq 0\).
+		Equation to calculate manhattan distance between two points, \(P_{1}(x_{1},y_{1})\) and \(P_{2}(x_{2},y_{2})\) is:
+		
+		$$ D(P_{1}, P_{2}) = \vert x_{1} - x_{2} \vert + \vert y_{1} - y_{2} \vert\ $$
+
+		Idea of the algorithm is to find minimum manhattan distance of a point to the given set of points. In other words, imagine that you have set of points like in matrix below:
+		
+		$$\begin{array}{ccccc}
+			1 & 0 & 0 & 0 & 1 \\
+			0 & 0 & 0 & 0 & 0 \\
+			0 & 0 & 0 & 0 & 0 \\
+			0 & 0 & 0 & 0 & 0 \\
+			1 & 0 & 0 & 0 & 1 
+		\end{array}$$
+
+		We are looking for the distance of the point that is closest to all 1's. We will use few toy examples to explain this algorithm.
+		<br/><br/>
+		<b>Step 1</b> of the algorithm is as follows:<br/>
+		<ul>
+			<li>Find miminum sum of \(x\) and \(y\)</li>
+			<li>Find maximum sum of \(x\) and \(y\)</li>
+			<li>Find minimum difference of \(x\) and \(y\)</li>
+			<li>Find maximum difference of \(x\) and \(y\)</li>
+		</ul>
+		<br/>
+		But what is the reason behind this step? Let us take a look again ot our example and imagine that array given is placed in the corner of coordinate system. Then, our 1's will have following coordinates:
+
+		$$\begin{array}{ccccc}
+			(4,0) & 0 & 0 & 0 & (4,4) \\
+			0 & 0 & 0 & 0 & 0 \\
+			0 & 0 & 0 & 0 & 0 \\
+			0 & 0 & 0 & 0 & 0 \\
+			(0,0) & 0 & 0 & 0 & (0,4)
+		\end{array}$$
+
+		Therefore we will calculate four following values:
+		<ul>
+			<li>\(minSum = 0\) (from point (0,0))</li>
+			<li>\(maxSum = 8\) (from point (4,4))</li>
+			<li>\(minDiff = -4\) (from point (0,4))</li>
+			<li>\(maxDiff = 4\) (from point (4,0))</li>
+		</ul>
+		<br/>
+		Each value corresponds to each point and this is not coincidence. By these values we determine "corners" of our area, so the points which are placed the furthest to north, south, east and west.
+		Of course, with this example we have four different points, but it does not always have to be true - e.g. imagine situation where we have only three points that form a triangle.<br/><br/>
+		Ok, let's now take a look at <b>Step 2</b> - calculate:
+		<ul>
+			<li>difference between \(maxSum\) and \(minSum\)</li>
+			<li>difference between \(maxDiff\) and \(minDiff\)</li>
+		</ul>
+		In our example we receive:
+		<ul>
+			<li>\(rangeSum = maxSum - minSum = 8 - 0 = 8\)
+			<li>\(rangeDiff = maxDiff - minDiff = 4 - (-4) = 8\)</li>
+		</ul>
+		These two ranges actually denote manhattan distance between corresponding points. Indeed, distance between point (4,4) described by maxSum and point (0,0) described by minSum is equal to 8.
+		Similar case applies to points (4,0) - maxDiff and (0,4) - minDiff.
+	</p>
+		<img src="manhattan_1.png"/>
+	<p>
+		<b>Step 3</b><br/>
+		In third step we have to determine two values, \(s\) and \(b\). Algorithm says:
+		<ul>
+			<li>Calculate \(s\) as minimum value of \(rangeSum\) and \(rangeDiff\)</li>
+			<li>Calculate \(b\) as maximum value of \(rangeSum\) and \(rangeDiff\)</li>
+		</ul>
+
+		In other words:
+		<ul>
+			<li>\(s = min(rangeSum, rangeDiff)\)</li>
+			<li>\(b = max(rangeSum, rangeDiff)\)</li>
+		</ul>
+
+		If \(b\) is odd then minimum distance is \(\lceil \frac{b+1}{2} \rceil\).
+		Answer is the same if both \(b\) and \(s\) are even and equal and additionally sum of values \(minSum\) and \(minDiff\) is odd.
+		Otherwise answer is \(\frac{b}{2}\).<br/>
+		Ok, let's debug it, using at first our original example. In this case we have following values:
+		<ul>
+			<li>\(s = min(8,8) = 8\)</li>
+			<li>\(b = max(8,8) = 8\)</li>
+		</ul>
+		
+		Our example is perfectly symmetrical therefore we receive same value of \(s\) and \(b\). So let's examine values \(minSum\) and \(minDiff\).
+		$$minSum + minDiff = 0 - 4 = -4$$
+	
+		This sum is even. Therefore we can see that none of first two conditions of looking for final answer is satisfied. So our answers is \(\frac{b}{2}=4\)<br/>
+		Ok, first of all, why only value \(b\) is used to find an answer (as it is either \(\lceil \frac{b+1}{2} \rceil\) or \(\frac{b}{2}\))? Well, we are looking for minimum distance and value \(b\) corresponds to distance between two furthest points. So we know that all other points are closer to each other and that is why we take \(b\) for final calculation.<br/>
+		Now we have three options. In first one \(b\) is odd, e.g. like in figure below.
+	</p>
+		<img src="manhattan_2.png"/>
+	<p>
+		In this example, point which is exactly in the middle of the line segment, has coordinates \((2, 2.5)\). Thus, we have to move to the nearest place with total number. We have to move either to \((2,2)\) or \((3,2)\). No matter which way we move, we will shift one unit further from one of the points. That is why we divide value \(b\) by two and add extra 1 to result. Like here we get \(5+1\) divided by \(2\) which gives us \(3\) as an answer (remember, this is distance to the point which is in the "middle" of area determined by all points).<br/>
+		In second variant, like in our example, we have \(b\) value even, so after division we are already in proper middle value, i.e. having total numbers as coordinates.\newline
+		Ok, but what about third option, exception where we have even value \(b\), yet we need to add 1 to the final result? Till now, both examples formed a rectangle but we need to keep in mind that it is not always the case. This variant will happen in situation like given in figure below.
+	</p>
+		<img src="manhattan_3.png"/>
+	<p>
+		Calculation in this example will be as follows:
+	<ul>
+		<li>\(minSum = 1\) <i>(from point (1,0))</i></li>
+		<li>\(maxSum = 5\) <i>(from point(3,2))</i></li>
+		<li>\(minDiff = -2\) <i>(from point(1,3))</i></li>
+		<li>\(maxDiff = 2\) <i>(from point(3,1))</i></li>
+		<li>\(rangeSum = 5-1 = 4\)</li>
+		<li>\(rangeDiff = 2-(-2) = 4\)</li>
+		<li>\(b = s = 4\)</li>
+		<li>\(minSum + minDiff = 1 - 2 = -1\) which is even</li>
+	</ul>
+	Final answer is therefore 3 and not 2, as usually expected.<br/>
+	
+	In following figure we can observe, how diagonals look like for these points.
+	</p>
+		<img src="manhattan_4.png"/>
+	<p>
+	Here we can see that even though length of both diagonals is even, they do not cross in "proper" point (the one with total numbers). So, looking at "manhattan" diagonals, we can observe two crossing points, (1,2) and (2,2). No matter which one we choose, we will be closer to some points and further to other ones. Hence, here we also need to add 1 to final result.
+	</p>
+	
+	<div class="footer">
+		<a href="https://www.mathjax.org">
+		<img title="Powered by MathJax" src="https://www.mathjax.org/badge/badge.gif" border="0" alt="Powered by MathJax" />
+		</a>
+	</div>

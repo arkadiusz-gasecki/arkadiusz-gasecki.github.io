@@ -1,0 +1,79 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<link rel="stylesheet" type="text/css" href="../../css/math_style.css">
+
+	<h3>Knapsack Problem</h3>
+	<p>
+		Even though knapsack problem and its dynamic solution are not untypical, it is still worth to debug behavior of the solution algorithm here. We will use following dataset to demonstrate it. 
+	</p>
+
+	<table class="text_center">
+		<tr><td>Item </td>  <td> 1 </td><td> 2 </td><td> 3 </td><td> 4 </td><td> 5 </td></tr>
+		<tr><td>Weight </td><td> 2 </td><td> 3 </td><td> 3 </td><td> 4 </td><td> 5 </td></tr>
+		<tr><td>Value </td> <td> 3 </td><td> 4 </td><td> 3 </td><td> 5 </td><td> 8 </td></tr>
+	</table>
+
+	<p>
+		Problem is given as follows: we have knapsack of given capacity (in our example we use 15). We want to place in it as many items as possible in such a way, that total value is maximized.<br/>
+		Problem is solved by solving subproblems and saving partial results. We need to go through all items and all sizes of knapsacks.<br/><br/>
+	
+		<b>Step 1</b> - define memory table<br/>
+		Prepare table \(M[i,j]\) where partial results will be placed. Here \(i\) denotes number of items considered, while \(j\) denotes capacity of rucksack.<br/><br/>
+	
+		<b>Step 2</b> - assign values for zero items<br/>
+		We will assign value \(0\) to \(M[0,0], M[0,1], ... , M[0,15]\). This is needed for further iterations. It simply means that 0 items in knapsack of capacity 0 to 15 are worth 0.<br/><br/>
+	
+		<b>Step 3</b> - iterate through items<br/><br/>
+		Here the most complex part of algorithm starts. We go trough items, sizes of knapsack, and consider following cases:
+		<ul>
+			<li>item taken does not fit in given knapsack</li>
+			<li>previous soultion for given capacity is better without considering given item</li>
+			<li>taking current item is providing better solution</li>
+		</ul>
+		How these checks are actually made? Let us go step by step. At first we will consider first item. First part of algorithm says:<br/>
+		if weight of item is greater then capacity of knapsack, assign previous solution. In other words:<br/>
+	</p>
+		<div class="pseudocode">
+			IF weight(i) > j: M[i,j] := M[i-1,j]
+		</div>
+	<p>
+		We interpret it in a way that there is no possibility at all to fit a given item. So the only solution we can consider is the one, where we did not consider this element but \(i-1\) previous items. For first item, we come back to zero items. Hence, for \(M[1,0]\) and \(M[1,1]\) we will assign value 0.<br/>
+		When we go to \(M[1,2]\), it means we consider kanpsack of maximum weight 2 for this single item. So, here we will assign value of this item, 3. So, for \(M[1,2], ... , M[1,20]\) we have value 3.<br/><br/>
+		Let us go to the second item - so now we consider items 1 and 2. As we stated already, if we have knapsack that cannot fit the examined item, we have no other way but use the previous solution.<br/>
+		E.g. we take knapsack of capacity 2, and have two items, 1 and 2. We already saved value for first item, \(M[1,2] = 3\). We cannot fit here second item, cause it is too big. So the best solution for \(M[2,2]\) will be "previous" value, so \(M[1,2]\).<br/>
+		When we go step further, we examine solution for \(M[2,3]\). We are choosing here one of two following answers:
+		<ul>
+			<li>\(M[i-1,3]\), so \(M[1,3]\) which equals 3.</li>
+			<li>\(M[i-1,j-weight(i)] + value(i)\)</li>
+		</ul>
+		How to interpret second option? We get back to \(M[1,3-3] + 4\). This means, go back to solutions from previous iteration. Then consider weight, that would allow this item to fit. Finally add value of item considered.<br/>
+		As a result we take better solution, which here will be 4. Going foward we will go to \(M[2,5]\). Here we can notice, that we will come back to \(M[1,5-3] = 3\). Then we will add value of this item. So, we know that both items fit in such knapsack and indeed assign value of both of them to this partial solution.<br/><br/>
+	
+		If we go to a third item, we can observe that for each knapsack we actually consider combinations of all three elements. But, we refer to solutions to previous step only, as these already contain results from combinations for first two elements.<br/>
+		Table below shows, what elements we do consider in each iteration.
+	</p>
+	
+	<table class="text_center">
+		<th>Target value </th><th> Value 1 </th><th> Value 2 </th><th> Elements finally considered </th>
+		<tr><td>\(M[3,0]\) </td><td> \(M[2,0] = 0\) </td><td> </td><td> () </td></tr>
+		<tr><td>\(M[3,1]\) </td><td> \(M[2,1] = 0\) </td><td> </td><td> () </td></tr>
+		<tr><td>\(M[3,2]\) </td><td> \(M[2,2] = 3\) </td><td> </td><td> (1) </td></tr>
+		<tr><td>\(M[3,3]\) </td><td> \(M[2,3] = 4\) </td><td> \(M[2,3-3] = 0 + 3\) </td><td> (2) </td></tr>
+		<tr><td>\(M[3,4]\) </td><td> \(M[2,4] = 4\) </td><td> \(M[2,4-3] = 0 + 3\) </td><td> (2) </td></tr>
+		<tr><td>\(M[3,5]\) </td><td> \(M[2,5] = 7\) </td><td> \(M[2,5-3] = 3 + 3\) </td><td> (1,2) </td></tr>
+		<tr><td>\(M[3,6]\) </td><td> \(M[2,6] = 7\) </td><td> \(M[2,6-3] = 3 + 3\) </td><td> (1,2) </td></tr>
+		<tr><td>\(M[3,7]\) </td><td> \(M[2,7] = 7\) </td><td> \(M[2,7-3] = 3 + 3\) </td><td> (1,2) </td></tr>
+		<tr><td>\(M[3,8]\) </td><td> \(M[2,8] = 7\) </td><td> \(M[2,8-3] = 7 + 3\) </td><td> (1,2,3) </td></tr>
+	</table>
+	<p>
+		Here it is very well visible for $M[3,5]$. We know that here we could either place items (1,2) or (1,3). For comparison we take \(M[2,5]\), so value where solution for items 1 and 2 is stored. From the other side, we take \(M[2,2]\). There, value 3 is stored, which corresponds to item 1. To that, we add value of item 3, so we get finally 6 for comparison. As we can see, it is better to take items 1 and 2, cause together they have better value than 1 and 3.<br/>
+		Similarly, for value \(M[3,8]\), we know that all three items would fit. To calculate Value 2, we take \(M[2,5]\), which corresponds to value of items 1 and 2, and still are able to add value of third item. Obviously it is better than simply taking \(M[2,8]\) where only two first items where stored.<br/>
+		<br/>
+		Answer to our problem will be placed in last cell of table \(M\), in our case it will be in \(M[5,15]\). It is also worth to underline that in this problem, solution will be proper regardless of order of elements that are considered.
+	</p>
+	
+	<div class="footer">
+		<a href="https://www.mathjax.org">
+		<img title="Powered by MathJax" src="https://www.mathjax.org/badge/badge.gif" border="0" alt="Powered by MathJax" />
+		</a>
+	</div>

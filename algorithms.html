@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Arkadiusz Gasecki - Home</title>
+	<link rel="stylesheet" href="css/hw1.css">
+	<link rel="stylesheet" href="css/math_style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="js/algorithms.js"></script>
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-20481470-2"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-20481470-2');
+	</script>
+
+</head>
+<body>
+	<header>
+		<h1>Arkadiusz Gasecki</h1>
+		<nav>
+			<a href="index.html">Home</a>
+			<a href="algorithms.html" class = "active">Algorithms</a>
+			<a href="recommendations.html">Recommendations</a>
+			<a href="others.html">Others</a>
+		</nav>
+	</header>
+	<main>
+		<aside class = "left">
+			<h3>Not Only Algorithms</h3>
+			<p></p>
+			<ul class="nav nav-pills flex-column">
+				<li class="nav-item">
+					<a class="nav-link" onclick="laduj('algorithms/manhattan_distance/manhattan_distance.html', this)">Minimum manhattan distance</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" onclick="laduj('algorithms/histogram_rectangle/histogram_rectangle.html', this)">Largest rectangle in histogram</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" onclick="laduj('algorithms/graph_layers/graph_layers.html', this)">Layers in graph</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" onclick="laduj('algorithms/hopcroft_karp/hopcroft_karp.html', this)">Hopcroft-Karp algorithm</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" onclick="laduj('algorithms/matrix_paths/matrix_paths.html', this)">Number of paths in matrix</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" onclick="laduj('algorithms/tournament_sort/tournament_sort.html', this)">Tournament sort</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" onclick="laduj('algorithms/sort_comparison/sort_comparison.html', this)">Copmarison of sort algorithms</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" onclick="laduj('algorithms/dynamic_programming/dynamic_programming.html', this); dynamic_show();">Dynamic programming</a>
+					<ul class="nav-inner">
+						<li>
+							<a class="nav-link nav-link-inner" style="display:display" onclick="laduj('algorithms/dynamic_programming/knapsack.html', this); dynamic_show();">Knapsack problem</a>
+						</li>
+						<li>
+							<a class="nav-link nav-link-inner" onclick="laduj('algorithms/dynamic_programming/plates.html', this); dynamic_show();">Plates</a>
+						</li>
+						<li>
+							<a class="nav-link nav-link-inner" onclick="laduj('algorithms/dynamic_programming/stones.html', this); dynamic_show();">Energy stones</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		<hr class="d-sm-none">
+			<a class="social-icon" href="https://ch.linkedin.com/in/arkadiusz-g%C4%85secki-ph-d-5365b518" target="_blank"><i class="fa fa-linkedin-square" style="font-size:32px;color:black"></i></a>
+			<a class="social-icon" href="https://github.com/arkadiusz-gasecki/ag" target="_blank"><i class="fa fa-github" style="font-size:32px;color:black"></i></a>
+
+		
+		</aside>
+		<section class = "right">
+			<iframe id="frame" overflow="hidden" src="algorithms_main.html"></iframe>
+		</section>
+	</main>
+</body>
+</html>

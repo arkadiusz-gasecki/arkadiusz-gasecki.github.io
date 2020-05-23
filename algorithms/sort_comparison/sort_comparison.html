@@ -1,0 +1,49 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<link rel="stylesheet" type="text/css" href="../../css/math_style.css">
+
+	<h3>Sort comparison</h3>
+	<p>
+		Sort algorithms are described very well in plenty of sources. Therefore they will not be described here. The only thing that is provided here is simple comparison of few, most recognizable sorting algorithms along with some extra comments.
+	</p>
+	<table>
+		<th>Algorithm Name</th>    <th>Complexity (average)</th><th>Space Complexity</th><th>Comment</th>
+		<tr><td>Bubble sort</td>   <td>\(O(n^2)\)  </td>        <td>\(O(1)\)</td>        <td>Time complexity depends on input data</td></tr>
+		<tr><td>Selection sort</td><td>\(O(n^2)\)  </td>        <td>\(O(1)\)</td>        <td></td></tr>
+		<tr><td>Insertion sort</td><td>\(O(n^2)\)  </td>        <td>\(O(1)\)</td>        <td>Time complexity depends on input data</td></tr>
+		<tr><td>Merge sort</td>    <td>\(O(n\)log\((n))\)</td>  <td>\(O(n)\)</td>        <td>There are implemention versions of in-place, which reduce space complexity</td></tr>
+		<tr><td>Quick sort</td>    <td>\(O(n\)log\((n))\)</td>  <td>\(O(n)\)</td>        <td>Time complexity depends on input data and selection of starting point</td></tr>
+		<tr><td>Heap sort</td>     <td>\(O(n\)log\((n))\)</td>  <td>\(O(n)\)</td>        <td></td></tr>
+	</table>
+
+	<p>
+		Comments:
+		<ul>
+			<li>
+				Some algorithms are sorting algorithms "in-place", which basically means that they do not use extra memory to save some partial results. These algorithms have therefore space complexity of \(O(1)\).
+			</li>
+			<li>
+				Some algorithms have different complexity when input data has some special shape. E.g. selection sort will run faster if delivered data is already sorted (complexity \(O(n)\)).
+			</li>
+			<li>
+				Quick sort is untypical algorithm, where complexity depends not only on shape of input data (sorted, unsorted, all elements are same) but also on value of selected pivot point. Therefore there are different techniques to select one, like:
+				<ul>
+					<li>
+						Selection of random value in fragment
+					</li>
+					<li>
+						Selection of middle value in fragment
+					</li>
+					<li>
+						Selection of median of first, middle and last value in fragment
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</p>
+	
+	<div class="footer">
+		<a href="https://www.mathjax.org">
+		<img title="Powered by MathJax" src="https://www.mathjax.org/badge/badge.gif" border="0" alt="Powered by MathJax" />
+		</a>
+	</div>
