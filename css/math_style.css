@@ -40,6 +40,38 @@ table.noborder th, table.noborder td {
   border: 0px;
 }
 
+table.pseudocode{
+	border: 1px;
+	border-collapse: collapse;
+	font-family: Courier New;
+	font-size: 1em;
+	text-align: justify;
+	word-spacing: 0.25em;
+	line-height: 1.5em;
+	width: 70%;
+	table-layout: fixed;
+}
+
+
+table.pseudocode th{
+	text-align: center;
+	background-color: #dddddd;
+}
+
+table.pseudocode td{
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+p.sql_table{
+	text-align: center
+}
+
+i.green{
+  color: green;
+}
+
+
 div.pseudocode{
   font-family: Courier New;
   margin: auto;
