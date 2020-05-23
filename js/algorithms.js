@@ -1,6 +1,7 @@
 
 function laduj(text,element){
-	document.getElementById("frame").src = text;
+	var _theframe = document.getElementById("frame");
+	_theframe.contentWindow.location.href = text;
 	try{
 	x = document.getElementsByClassName("nav-link-active");
 
