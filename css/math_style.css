@@ -63,6 +63,16 @@ table.pseudocode td{
 	padding-right: 1em;
 }
 
+table.padding_cell th{
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+table.padding_cell td{
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
 p.sql_table{
 	text-align: center
 }

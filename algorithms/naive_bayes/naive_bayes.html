@@ -1,0 +1,259 @@
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> 
+<link rel="stylesheet" type="text/css" href="../../css/math_style.css">
+
+<h3>Naive Bayes algorithm</h3>
+<p>
+	Naive Bayes algorithm is quite well described and documented throughout the Internet, yet it is a good exercise for me to provide my own description. So, at first answer to few base questions. What is it about? This algorithm is classification technique, which means that based on some input data it assignes given category for each entry. We can give some simple examples, like determining gender or spam email based on data delivered. But we can also imagine, that we want to assign clients to particular segments and want similar clients to land in the same bucket. Ok, but why naive? Well, in an example we will notice that every input factor is treated independently and with same weight - so approach as simple as possible.<br/>
+	Last thing, almost only to give me chance to pratice writing math equations. Algorithm uses conditional probability, which is given by following equation:
+</p>
+	$$
+	P(A|B) = \frac{P(B|A)*P(A)}{P(B)}
+	$$
+<p>
+	We are not going to explain here its nature, but rather see on an example, how it works. On purpose, I will not present further any math equations.<br/>
+	<b>Important:</b> example given shows binary classification problem, where we assign element to one ouf of two categories, however approach for more categories works exactly the same way.<br/>
+	The most famous "problem" that is presented, when talking about this algorithm, is golf example. Therefore here I will give a different one. At first we need input set, with data, from which the algorithm will "learn".
+</p>
+	<table class="text_center padding_cell">
+		<th>Heigth</th><th>Weigth</th><th>Eye color</th><th>Result</th>
+		<tr>
+		<td>Tall</td><td>Skinny</td><td>Blue</td><td>Pass</td>
+		</tr><tr>
+		<td>Tall</td><td>Medium</td><td>Brown</td><td>Pass</td>
+		</tr><tr>
+		<td>Short</td><td>Fat</td><td>Brown</td><td>Fail</td>
+		</tr><tr>
+		<td>Medium</td><td>Medium</td><td>Green</td><td>Fail</td>
+		</tr><tr>
+		<td>Short</td><td>Skinny</td><td>Blue</td><td>Pass</td>
+		</tr><tr>
+		<td>Medium</td><td>Fat</td><td>Blue</td><td>Fail</td>
+		</tr><tr>
+		<td>Tall</td><td>Fat</td><td>Green</td><td>Fail</td>
+		</tr><tr>
+		<td>Tall</td><td>Fat</td><td>Blue</td><td>Pass</td>
+		</tr><tr>
+		<td>Medium</td><td>Skinny</td><td>Green</td><td>Pass</td>
+		</tr><tr>
+		<td>Medium</td><td>Skinny</td><td>Brown</td><td>Fail</td>
+		</tr>
+	</table>
+
+<p>
+	Ok, so here we have candidates that were trying to pass physical exams to a military university. Each of candidates is described by three factors: heigth, weigth and eye color. We also know, whether each of them passed or failed the exam.<br/>
+	If you notice, this set was determined on purpose this way, cause there is one condition that is satisfied here. Namely, for each factor we can find entry with both results Pass and Fail. Later we will mention, what happens in cases when it is not fulfilled.<br/>
+	Neverthless, for now let us go forward with this table. First part of algorithm is about to collect each factor separately. So we have:
+</p>
+
+	<table class="text_center padding_cell">
+		<th><i>Heigth</i></th><th>Pass</th><th>Fail</th><th>Pr<sub>pass</sub></th><th>Pr<sub>fail</sub></th>
+		<tr>
+		<td>Short</td><td>1</td><td>1</td><td>1/5</td><td>1/5</td>
+		</tr><tr>
+		<td>Medium</td><td>1</td><td>3</td><td>1/5</td><td>3/5</td>
+		</tr><tr>
+		<td>Tall</td><td>3</td><td>1</td><td>3/5</td><td>1/5</td>
+		</tr><tr>
+		<td><b>Total</b></td><td><b>5</b></td><td><b>5</b></td><td><b>5/5</b></td><td><b>5/5</b></td>
+		</tr>
+	</table>
+
+<p>
+	So, you can see that we take a single factor, for each value we check how many failes and passes we have. Then, we calculate probability, e.g. for <i>Short</i> we have one pass, so probability is calculated as this one entry divided by all entries available where we have Pass, so five.<br/>
+	Overall we can notice that sum of these probabilities equals 100%.<br/>
+	Well, let us then build similar summary for two other factors.
+</p>
+
+	<table class="text_center padding_cell">
+		<th><i>Weigth</i></th><th>Pass</th><th>Fail</th><th>Pr<sub>pass</sub></th><th>Pr<sub>fail</sub></th>
+		<tr>
+		<td>Skinny</td><td>3</td><td>1</td><td>3/5</td><td>1/5</td>
+		</tr><tr>
+		<td>Medium</td><td>1</td><td>1</td><td>1/5</td><td>1/5</td>
+		</tr><tr>
+		<td>Fat</td><td>1</td><td>3</td><td>1/5</td><td>3/5</td>
+		</tr>
+	</table>
+
+	<table class="text_center padding_cell">
+		<th><i>Eye color</i></th><th>Pass</th><th>Fail</th><th>Pr<sub>pass</sub></th><th>Pr<sub>fail</sub></th>
+		<tr>
+		<td>Blue</td><td>3</td><td>1</td><td>3/5</td><td>1/5</td>
+		</tr><tr>
+		<td>Brown</td><td>1</td><td>2</td><td>1/5</td><td>2/5</td>
+		</tr><tr>
+		<td>Green</td><td>1</td><td>2</td><td>1/5</td><td>2/5</td>
+		</tr>
+	</table>
+
+<p>
+	In second step, we build same collation, but for our result. This is the value, which we will try to determine for future cases.
+</p>
+
+	<table class="text_center padding_cell">
+		<th><i>Result</i></th><th>Number</th><th>Pr</th>
+		<tr>
+		<td>Pass</td><td>5</td><td>5/10</td>
+		</tr><tr>
+		<td>Fail</td><td>5</td><td>5/10</td>
+		</tr>
+	</table>
+
+<p>
+	Now, using this information, we can try to calculate probability for a new student, whether he will pass or fail. Let's take following example: (Short, Medium, Green). We perform two calculations, probability that he passes and that he fails.
+	For pass, we take probabilities for each factor:<br/>
+	Pr of pass under condition of being Short = 1/5<br/>
+	Pr of pass under condition of being Medium = 1/5<br/>
+	Pr of pass under condition of having Green eyes = 1/5<br/>
+	Pr of pass in general = 5/10<br/>
+	We multiply all these values getting as final result \(P_{pass} = 1/5 * 1/5 * 1/5 * 5/10 = 1/250 = 0.004\)<br/><br/>
+	We do similar operation for fail, namely:<br/>
+	Pr of fail under condition of being Short = 1/5<br/>
+	Pr of fail under condition of being Medium = 1/5<br/>
+	Pr of fail under condition of having Green eyes = 2/5<br/>
+	Pr of fail in general = 5/10<br/>
+	Our final result is then \(P_{fail} = 1/5 * 1/5 * 2/5 * 5/10 = 2/250 = 0.008\)<br/><br/>
+	Now, we know that total probability equals 1, so we can normalize these two values, by diving each of them by their sum:<br/>
+	\(P_{pass} = \frac{0.004}{0.004 + 0.008} = 0.33\)<br/>
+	\(P_{fail} = \frac{0.008}{0.004 + 0.008} = 0.67\)<br/>
+	We can then see, that for this student we have 2/3 chances that he will fail the exam and 1/3 that he will pass it (inidicating final prediction as Fail). This example shows very nicely naitivity of the algorithm. As you can observe, for parameters of heigth and weigth we had same probability of pass and fail. Therefore, the only factor that had actual influence to a final result, was eye color, which should not actually be so important when we are saying about passing physical exams. However, this algorithm treats all factors equally, as it was mentioned earlier.<br/>
+	<br/>
+</p>
+<b>Zero frequency problem</b><br/>
+<p>
+	As I said before, with this example we have all values nicely present, but what if we had a zero in one of our probability matrix? Let us reduce example set by removing 9<sup>th</sup> entry. Our frequency matrices will look then as follows:
+</p>
+
+	<table class="text_center padding_cell">
+		<th><i>Heigth</i></th><th>Pass</th><th>Fail</th><th>Pr<sub>pass</sub></th><th>Pr<sub>fail</sub></th>
+		<tr>
+		<td>Short</td><td>1</td><td>1</td><td>1/4</td><td>1/5</td>
+		</tr><tr>
+		<td>Medium</td><td>0</td><td>3</td><td>0/4</td><td>3/5</td>
+		</tr><tr>
+		<td>Tall</td><td>3</td><td>1</td><td>3/4</td><td>1/5</td>
+		</tr>
+	</table>
+
+	<table class="text_center padding_cell">
+		<th><i>Weigth</i></th><th>Pass</th><th>Fail</th><th>Pr<sub>pass</sub></th><th>Pr<sub>fail</sub></th>
+		<tr>
+		<td>Skinny</td><td>2</td><td>1</td><td>2/4</td><td>1/5</td>
+		</tr><tr>
+		<td>Medium</td><td>1</td><td>1</td><td>1/4</td><td>1/5</td>
+		</tr><tr>
+		<td>Fat</td><td>1</td><td>3</td><td>1/4</td><td>3/5</td>
+		</tr>
+	</table>
+
+
+	<table class="text_center padding_cell">
+		<th><i>Eye color</i></th><th>Pass</th><th>Fail</th><th>Pr<sub>pass</sub></th><th>Pr<sub>fail</sub></th>
+		<tr>
+		<td>Blue</td><td>3</td><td>1</td><td>3/4</td><td>1/5</td>
+		</tr><tr>
+		<td>Brown</td><td>1</td><td>2</td><td>1/4</td><td>2/5</td>
+		</tr><tr>
+		<td>Green</td><td>0</td><td>2</td><td>0/4</td><td>2/5</td>
+		</tr>
+	</table>
+
+	<table class="text_center padding_cell">
+		<th>Result</th><th>Number</th><th>Pr</th>
+		<tr>
+		<td>Pass</td><td>4</td><td>4/9</td>
+		</tr><tr>
+		<td>Fail</td><td>5</td><td>5/9</td>
+		</tr>
+	</table>
+
+<p>
+	If we now would ask about (Medium, Fat, Green), we would come to following result, when trying to calculate Pass value:<br/>
+	\(P = 0/4 * 1/4 * 0/4 * 4/9 = 0\)<br/>
+	That would mean that having green eyes or being medium height does not give you any chance for passing the exam, according to data. But this is only because we do not have entries with such values that passed the exam. This is called zero frequency problem. One way to fix this problem is to add fixed value to all the values. This comes from a technique called <b>additive smoothing</b> or <b>Laplace smoothing</b>. In Naive Bayes commonly value 1 is added, as simplest approach. <i>Although it is worth to notice that calculation of value that should be added is another problem, described in technique mentioned.</i><br/>
+	So the best way is to rewrite our frequency tables, that we can see how our total values change as well:
+</p>
+	<table class="text_center padding_cell">
+ 		<th><i>Heigth</i></th><th>Pass</th><th>Fail</th><th>Pr<sub>pass</sub></th><th>Pr<sub>fail</sub></th>
+ 		<tr>
+ 		<td>Short</td><td>1+1</td><td>1+1</td><td>2/7</td><td>2/8</td>
+ 		</tr><tr>
+ 		<td>Medium</td><td>0+1</td><td>3+1</td><td>1/7</td><td>4/8</td>
+ 		</tr><tr>
+ 		<td>Tall</td><td>3+1</td><td>1+1</td><td>4/7</td><td>2/8</td>
+ 		</tr><tr>
+ 		<td><b>Total</b></td><td><b>4+3</b></td><td><b>5+3</b></td><td><b>7/7</b></td><td><b>8/8</b></td>
+ 		</tr>
+	</table>
+ 
+	<table class="text_center padding_cell">
+		<th><i>Weigth</i></th><th>Pass</th><th>Fail</th><th>Pr<sub>pass</sub></th><th>Pr<sub>fail</sub></th>
+ 		<tr>
+ 		<td>Skinny</td><td>2+1</td><td>1+1</td><td>3/7</td><td>2/8</td>
+ 		</tr><tr>
+ 		<td>Medium</td><td>1+1</td><td>1+1</td><td>2/7</td><td>2/8</td>
+ 		</tr><tr>
+ 		<td>Fat</td><td>1+1</td><td>3+1</td><td>2/7</td><td>4/8</td>
+ 		</tr><tr>
+ 		<td><b>Total</b></td><td><b>4+3</b></td><td><b>5+3</b></td><td><b>7/7</b></td><td><b>8/8</b></td>
+ 		</tr>
+	</table>
+ 
+ 
+	<table class="text_center padding_cell">
+		<th><i>Eye color</i></th><th>Pass</th><th>Fail</th><th>Pr<sub>pass</sub></th><th>Pr<sub>fail</sub></th>
+ 		<tr>
+ 		<td>Blue</td><td>3+1</td><td>1+1</td><td>4/7</td><td>2/8</td>
+ 		</tr><tr>
+ 		<td>Brown</td><td>1+1</td><td>2+1</td><td>2/7</td><td>3/8</td>
+ 		</tr><tr>
+ 		<td>Green</td><td>0+1</td><td>2+1</td><td>1/7</td><td>3/8</td>
+ 		</tr><tr>
+ 		<td><b>Total</b></td><td><b>4+3</b></td><td><b>5+3</b></td><td><b>7/7</b></td><td><b>8/8</b></td>
+ 		</tr>
+	</table>
+<p>
+	Overall we have added 3 artifical entries for Pass and 3 for Fail. Each table has also now row with Total added, where we can observe this as well as fact, that probabilities still sum up to 100%. Table with results will change as follows:
+ 
+	<table class="text_center padding_cell">
+ 		<th><i>Result</i></th><th>Number</th><th>Pr</th>
+ 		<tr>
+ 		<td>Pass</td><td>4+3</td><td>4+3/9+6 = 7/15</td>
+ 		</tr><tr>
+ 		<td>Fail</td><td>5+3</td><td>5+3/9+6 = 8/15</td>
+ 		</tr>
+	</table>
+
+<p>
+	With such approach, we are sure that we do not have any zero probabilities and can safely perform our calculations. Just as an exercise, let us compare how probabilities have changed after this addition. Tables below show values in percents for factor Heigth and for final result.
+</p>
+
+	<table class="text_center padding_cell">
+		<th><i>Heigth</i></th><th>P(Pass)<sub>bef</sub></th><th>P(Fail)<sub>bef</sub></th><th style="border-left: double">P(Pass)<sub>aft</sub></th><th>P(Fail)<sub>aft</sub></th>
+		<tr>
+		<td>Short</td><td>25%</td><td>20%</td><td style="border-left: double">28%</td><td>25%</td>
+		</tr><tr>
+		<td>Medium</td><td>0%</td><td>60%</td><td style="border-left: double">14%</td><td>50%</td>
+		</tr><tr>
+		<td>Tall</td><td>75%</td><td>20%</td><td style="border-left: double">58%</td><td>25%</td>
+		</tr>
+	</table>
+
+	<table class="text_center padding_cell">
+		<th>Result</th><th>P<sub>bef</sub></th><th style="border-left: double">P<sub>aft</sub></th>
+		<tr>
+		<td>Pass</td><td>44%</td><td style="border-left: double">46%</td>
+		</tr><tr>
+		<td>Fail</td><td>56%</td><td style="border-left: double">54%</td>
+		</tr>
+	</table>
+
+<p>
+	We can notice that probabilities for Height factor are now indeed <i>smoother</i>. More interesting, probabilities for final results did not change much even though we added 6 entries to only 9 existing ones.
+</p>
+	<div class="footer">
+		<a href="https://www.mathjax.org">
+		<img title="Powered by MathJax" src="https://www.mathjax.org/badge/badge.gif" border="0" alt="Powered by MathJax" />
+		</a>
+	</div>
